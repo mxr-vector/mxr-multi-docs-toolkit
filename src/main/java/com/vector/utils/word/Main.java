@@ -267,10 +267,11 @@ public class Main<T, R> {
             placeholderMap.put("${FZJG}", Optional.ofNullable("发证机关").orElse(""));
             placeholderMap.put("${FZRQ}", Optional.ofNullable("发证日期").orElse(""));
             placeholderMap.put("${ZSYXQ}", Optional.ofNullable("证书有效期").orElse(""));
-            placeholderMap.put("${ZJZMJ}", Optional.ofNullable("证书附件图").orElse(""));
+            placeholderMap.put("${ZSFTFJ}", Optional.ofNullable("证书附件图").orElse(""));
         });
         String s = null;
-        placeholderMap.put("${ZSYXQ}", Optional.ofNullable(s).orElse("空指针测试"));
         CompletableFuture.allOf(future1, future2).join();
+        placeholderMap.put("${ZSYXQ}", Optional.ofNullable(s).orElse(""));
+
     }
 }
