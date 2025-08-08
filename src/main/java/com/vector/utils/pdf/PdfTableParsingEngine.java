@@ -6,9 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ResourceUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -44,8 +46,8 @@ public class PdfTableParsingEngine {
         // 初始化文档处理授权许可
         WordAuthLincense.setAuthLicense();
         // 使用try-with-resources自动管理文件资源
-        try (FileInputStream fileStream = new FileInputStream(path);
-             Document pdfDocument = new Document(fileStream)) {
+        try (InputStream inputStream = this.getClass().getResourceAsStream(path);
+             Document pdfDocument = new Document(inputStream)) {
 
             // 遍历文档所有页面进行表格处理
             for (int i = 1; i <= pdfDocument.getPages().size(); i++) {

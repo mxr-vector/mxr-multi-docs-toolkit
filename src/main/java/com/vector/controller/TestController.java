@@ -21,8 +21,8 @@ public class TestController {
     private final PdfTableParsingEngine pdfTableParsingEngine;
     @GetMapping("/hello")
     public String hello(){
-        String path = "C:\\Users\\YuanJie\\Desktop\\aspose-pdf-table-toolkit\\入职申请表.pdf";
-//        path = "C:\\Users\\YuanJie\\Desktop\\demo-aspose-pdf-table-read\\横向表头.pdf";
+        String path = "/static/入职申请表.pdf";
+//        path = "/static/横向表头.pdf";
         pdfTableParsingEngine.tableAnalyze(path);
         return "hello";
     }
