@@ -1,6 +1,6 @@
 package com.vector.utils.pdf;
 
-import com.vector.utils.SpringContextUtil;
+import com.vector.utils.context.SpringContextUtil;
 import com.vector.utils.pdf.aspect.TableFieldMapperAspect;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;

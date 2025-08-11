@@ -1,5 +1,6 @@
 package com.vector.utils.word.converter.biz1;
 
+import com.vector.utils.context.TtlContextHolderUtil;
 import com.vector.utils.word.AbstractDynamicTemplate;
 import com.vector.utils.word.WordCommonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,9 @@ public class Dynamic_01 extends AbstractDynamicTemplate {
             if (!tableText.contains("${DYNAMIC_01}")) {
                 return false;
             }
+
+            Object data = TtlContextHolderUtil.getContext().getProperty("data");
+            log.info("接收到controller层数据: {}", data);
 
             // 获取数据
             List<String> list = List.of("test1", "test2", "test3");
