@@ -1,5 +1,6 @@
-package com.vector.utils.context;
+package com.vector.config;
 
+import com.vector.utils.context.RequestThreadInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
