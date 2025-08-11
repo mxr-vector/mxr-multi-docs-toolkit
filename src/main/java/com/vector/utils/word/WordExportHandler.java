@@ -90,9 +90,11 @@ public class WordExportHandler {
      */
     private boolean handleDynamicTable(XWPFTable table, String templateName) {
         boolean flag = false;
+        // 检查表格 是否包含 指定的动态表格标识
+        String tableText = WordCommonUtil.getTableText(table);
         for (AbstractDynamicTemplate dynamicTemplate : dynamicTemplates) {
             if (templateName.equals(dynamicTemplate.getTemplateName())) {
-                flag = dynamicTemplate.execute(table);
+                flag = dynamicTemplate.execute(table,tableText);
             }
         }
         return flag;

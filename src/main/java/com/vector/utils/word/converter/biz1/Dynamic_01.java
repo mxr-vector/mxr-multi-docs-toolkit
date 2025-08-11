@@ -22,11 +22,10 @@ public class Dynamic_01 extends AbstractDynamicTemplate {
 
 
     @Override
-    protected boolean execute(XWPFTable table) {
+    protected boolean execute(XWPFTable table,String tableText) {
         try {
             int cellNum = 3;
             // 检查表格 是否包含 指定的动态表格标识
-            String tableText = WordCommonUtil.getTableText(table);
             // 处理动态表格
             if (!tableText.contains("${DYNAMIC_01}")) {
                 return false;
