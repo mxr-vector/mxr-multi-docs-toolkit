@@ -8,7 +8,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 
 /**
  * @ClassName AbstractDynamicTemplate
- * @description: 抽象动态模板
+ * @description: 动态模板抽象类
  * @author YuanJie
  * @date 2025/8/11 08:53
  */

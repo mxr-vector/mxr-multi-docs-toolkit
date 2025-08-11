@@ -1,4 +1,4 @@
-package com.vector.utils.word.converter;
+package com.vector.utils.word.converter.biz1;
 
 import com.vector.utils.word.AbstractStaticTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName Static_01
- * @description: TODO
+ * @description: 静态实例demo
  * @author YuanJie
  * @date 2025/8/11 15:18
  */

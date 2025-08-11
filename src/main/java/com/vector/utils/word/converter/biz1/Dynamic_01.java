@@ -1,4 +1,4 @@
-package com.vector.utils.word.converter;
+package com.vector.utils.word.converter.biz1;
 
 import com.vector.utils.word.AbstractDynamicTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +23,7 @@ public class Dynamic_01 extends AbstractDynamicTemplate {
     @Override
     protected boolean execute(XWPFTable table) {
         try {
+            int cellNum = 3;
             // 检查表格 是否包含 指定的动态表格标识
             String tableText = getTableText(table);
             // 处理动态表格
@@ -42,8 +43,8 @@ public class Dynamic_01 extends AbstractDynamicTemplate {
                 XWPFTableRow row = table.createRow();
                 List<XWPFTableCell> cells = row.getTableCells();
 
-                // 确保有足够的单元格
-                while (cells.size() < 3) {
+                // 确保有足够的单元列
+                while (cells.size() < cellNum) {
                     row.createCell();
                     cells = row.getTableCells();
                 }

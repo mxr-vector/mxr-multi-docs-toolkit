@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName AbstractStaticTemplate
- * @description: TODO
+ * @description: 静态模板占位符处理抽象类
  * @author YuanJie
  * @date 2025/8/11 15:16
  */
