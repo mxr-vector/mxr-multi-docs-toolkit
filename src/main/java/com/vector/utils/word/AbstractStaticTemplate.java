@@ -19,6 +19,8 @@ public abstract class AbstractStaticTemplate {
 
     /**
      * 所属word模板名称
+     * TODO 静态模板归属名 这里考虑整改
+     * 因为子类实现应该是具备复用性和模块化的, 模板归属意味着仅能用一个模板，失去了子类复用能力
      */
     protected String getTemplateName() {
         return "word_demo_template";

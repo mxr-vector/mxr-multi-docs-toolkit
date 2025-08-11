@@ -16,6 +16,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 public abstract class AbstractDynamicTemplate {
     /**
      * 所属word模板名称
+     * TODO 动态模板归属名 这里考虑整改
+     * 因为子类实现应该是具备复用性和模块化的, 模板归属意味着仅能用一个模板，失去了子类复用能力
      */
     protected String getTemplateName() {
         return "word_demo_template";
