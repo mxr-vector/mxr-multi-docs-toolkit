@@ -19,8 +19,8 @@ public abstract class AbstractStaticTemplate {
 
     /**
      * 所属word模板名称
-     * TODO 静态模板归属名 这里考虑整改
-     * 因为子类实现应该是具备复用性和模块化的, 模板归属意味着仅能用一个模板，失去了子类复用能力
+     * 静态占位符整体决定了一个word骨架。可以是1对1.动态占位符则是1对多.
+     * 因此静态模板子类实现需要继承该抽象类，并实现该方法。
      */
     protected String getTemplateName() {
         return "word_demo_template";

@@ -65,8 +65,8 @@ public class WordExportHandler {
             // 替换表格中的占位符
             for (XWPFTable table : document.getTables()) {
                 // 处理动态表格数据
-                log.info(">>>>>>>>>处理动态表格: {}<<<<<<<<<<<", templateName);
-                boolean b = handleDynamicTable(table, templateName);
+                log.info(">>>>>>>>>处理动态表格<<<<<<<<<<<");
+                boolean b = handleDynamicTable(table);
                 if (b) continue;
                 log.info(">>>>>>>>>处理静态表格: {}<<<<<<<<<<<", templateName);
                 for (XWPFTableRow row : table.getRows()) {
@@ -88,7 +88,7 @@ public class WordExportHandler {
      *
      * @param table
      */
-    private boolean handleDynamicTable(XWPFTable table, String templateName) {
+    private boolean handleDynamicTable(XWPFTable table) {
         boolean flag = false;
         // 检查表格 是否包含 指定的动态表格标识
         String tableText = WordCommonUtil.getTableText(table);
@@ -96,9 +96,8 @@ public class WordExportHandler {
             return false;
         }
         for (AbstractDynamicTemplate dynamicTemplate : dynamicTemplates) {
-            if (templateName.equals(dynamicTemplate.getTemplateName())) {
-                flag = dynamicTemplate.execute(table,tableText);
-            }
+            if(flag) break;
+            flag =  dynamicTemplate.execute(table,tableText);
         }
         return flag;
     }
