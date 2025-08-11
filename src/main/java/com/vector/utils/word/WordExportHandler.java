@@ -92,6 +92,9 @@ public class WordExportHandler {
         boolean flag = false;
         // 检查表格 是否包含 指定的动态表格标识
         String tableText = WordCommonUtil.getTableText(table);
+        if (StringUtils.isBlank(tableText)) {
+            return false;
+        }
         for (AbstractDynamicTemplate dynamicTemplate : dynamicTemplates) {
             if (templateName.equals(dynamicTemplate.getTemplateName())) {
                 flag = dynamicTemplate.execute(table,tableText);
