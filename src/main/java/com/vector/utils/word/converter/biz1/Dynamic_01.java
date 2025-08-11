@@ -1,6 +1,7 @@
 package com.vector.utils.word.converter.biz1;
 
 import com.vector.utils.word.AbstractDynamicTemplate;
+import com.vector.utils.word.WordCommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
@@ -25,7 +26,7 @@ public class Dynamic_01 extends AbstractDynamicTemplate {
         try {
             int cellNum = 3;
             // 检查表格 是否包含 指定的动态表格标识
-            String tableText = getTableText(table);
+            String tableText = WordCommonUtil.getTableText(table);
             // 处理动态表格
             if (!tableText.contains("${DYNAMIC_01}")) {
                 return false;
@@ -50,9 +51,9 @@ public class Dynamic_01 extends AbstractDynamicTemplate {
                 }
 
                 // 填充数据：土地用途、用地面积、土地用途占比
-                setCellTextWithStyle(cells.get(0), item != null ? item : "");
-                setCellTextWithStyle(cells.get(1), item != null ? item : "");
-                setCellTextWithStyle(cells.get(2), item != null ? item + "%" : "");
+                WordCommonUtil.setCellTextWithStyle(cells.get(0), item != null ? item : "");
+                WordCommonUtil.setCellTextWithStyle(cells.get(1), item != null ? item : "");
+                WordCommonUtil.setCellTextWithStyle(cells.get(2), item != null ? item + "%" : "");
             }
 
             log.info("成功处理动态表格，数据行数: {}", list.size());
