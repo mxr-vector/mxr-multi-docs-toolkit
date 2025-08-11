@@ -9,7 +9,6 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,11 +27,11 @@ public class Main<T, R> {
 
     private static final String path = "/static/word_test.docx";
 
-    private static final String savePath = "C:\\Users\\YuanJie\\Desktop\\mxrProject\\mxr-pdf-table-toolkit\\";
+    private static final String savePath = System.getProperty("user.dir");
     public static void main(String[] args) throws IOException {
-        XWPFDocument document = new Main().generateWordDocument(null);
+        XWPFDocument document = new Main().generateWordDocument(path,null);
         // 将文档写入本地文件
-        try (FileOutputStream out = new FileOutputStream(savePath + "word_result.docx")) {
+        try (FileOutputStream out = new FileOutputStream(savePath +"/" +"word_result.docx")) {
             document.write(out);
         } finally {
             document.close();
@@ -41,10 +40,11 @@ public class Main<T, R> {
 
     /**
      * 生成Word文档
+     * @param path 模板文件路径
      * @param  functions 为读取多个动态表格数据做准备
      * @return Word文档对象
      */
-    private XWPFDocument generateWordDocument(Map<T, Function<T, R>> functions) throws IOException {
+    private XWPFDocument generateWordDocument(String path,Map<T, Function<T, R>> functions) throws IOException {
         // 使用模板文件
         try (InputStream inputStream = this.getClass().getResourceAsStream(path);) {
             if (inputStream == null) {
@@ -65,7 +65,7 @@ public class Main<T, R> {
         try {
             // 替换段落中的占位符, 现在无需求
 //            for (XWPFParagraph paragraph : document.getParagraphs()) {
-//                replaceInParagraph(paragraph, dfsjzj);
+//                replaceInParagraph(paragraph);
 //            }
 
             // 替换表格中的占位符
