@@ -1,6 +1,8 @@
 package com.vector.utils.word.converter.biz1;
 
+import com.vector.utils.context.TtlContextHolderUtil;
 import com.vector.utils.word.AbstractStaticTemplate;
+import com.vector.utils.word.EnumWordTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +20,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class Static_01 extends AbstractStaticTemplate {
     @Override
+    public String getTemplateName() {
+        return EnumWordTemplate.GG.getName();
+    }
+    @Override
     protected void placeholderMapping(ConcurrentHashMap<String, String> placeholderMap) {
         // 1.获取建设单位信息 和 获取项目基本信息
         /**
          * {@link GgGhxkController#input}
          */
+        Object data = TtlContextHolderUtil.getContext().getProperty("data");
+        log.info("接收到controller层数据: {}", data);
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
             log.info("获取项目基本信息,threadName: {},threadId: {}", Thread.currentThread().getName(), Thread.currentThread().getId());
 

@@ -2,8 +2,6 @@ package com.vector.utils.word;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.*;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 
 
 /**

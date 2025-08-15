@@ -1,6 +1,7 @@
 package com.vector.controller;
 
 import com.vector.utils.context.TtlContextHolderUtil;
+import com.vector.utils.word.EnumWordTemplate;
 import com.vector.utils.word.WordExportHandler;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -37,9 +38,8 @@ public class TestController {
     @GetMapping("/poi-word")
     public void poiWord() throws IOException {
         TtlContextHolderUtil.getContext().addProperty("data", "测试隐式传值");
-        String templatePath = "/static/word_demo_template.docx";
         String savePath = System.getProperty("user.dir");
-        XWPFDocument document = wordExportHandler.generateWordDocument(templatePath, "word_demo_template");
+        XWPFDocument document = wordExportHandler.generateWordDocument(EnumWordTemplate.GG);
         // 将文档写入本地文件
         try (FileOutputStream out = new FileOutputStream(savePath +"/" +"word_result.docx")) {
             document.write(out);

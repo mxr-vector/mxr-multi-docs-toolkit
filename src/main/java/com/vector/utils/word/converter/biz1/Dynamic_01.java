@@ -31,10 +31,6 @@ public class Dynamic_01 extends AbstractDynamicTemplate {
             if (!tableText.contains("${DYNAMIC_01}")) {
                 return false;
             }
-
-            Object data = TtlContextHolderUtil.getContext().getProperty("data");
-            log.info("接收到controller层数据: {}", data);
-
             // 获取数据
             List<String> list = List.of("test1", "test2", "test3");
             // 清除现有行（保留表头）

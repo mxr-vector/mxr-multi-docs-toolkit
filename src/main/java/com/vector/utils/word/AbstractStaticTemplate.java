@@ -1,7 +1,6 @@
 package com.vector.utils.word;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
@@ -22,9 +21,8 @@ public abstract class AbstractStaticTemplate {
      * 静态占位符整体决定了一个word骨架。可以是1对1.动态占位符则是1对多.
      * 因此静态模板子类实现需要继承该抽象类，并实现该方法。
      */
-    protected String getTemplateName() {
-        return "word_demo_template";
-    }
+    protected abstract String getTemplateName();
+
     /**
      * 替换静态占位符内容
      * @param paragraph 段落
@@ -33,28 +31,27 @@ public abstract class AbstractStaticTemplate {
         log.info(">>>>>>>>>替换静态占位符内容<<<<<<<<<<<");
         String text = paragraph.getText();
 
-        if (StringUtils.isNotBlank(text)) {
-            // 收集 占位符-真实值
-            ConcurrentHashMap<String, String> placeholderMap = new ConcurrentHashMap<>();
-            placeholderMapping(placeholderMap);
-            // 批量替换占位符
-            String originalText = text;
+        if (text == null || text.isBlank()) return;
+        // 收集 占位符-真实值
+        ConcurrentHashMap<String, String> placeholderMap = new ConcurrentHashMap<>();
+        placeholderMapping(placeholderMap);
+        // 批量替换占位符
+        String originalText = text;
 
-            for (Map.Entry<String, String> entry : placeholderMap.entrySet()) {
-                text = text.replace(entry.getKey(), entry.getValue());
-            }
-
-            // 清空原有内容并重新设置
-            if (!text.equals(originalText)) {
-                // 清空段落中的所有run
-                for (int i = paragraph.getRuns().size() - 1; i >= 0; i--) {
-                    paragraph.removeRun(i);
-                }
-                // 添加新的内容
-                XWPFRun run = paragraph.createRun();
-                run.setText(text);
-            }
+        for (Map.Entry<String, String> entry : placeholderMap.entrySet()) {
+            text = text.replace(entry.getKey(), entry.getValue());
         }
+
+
+        if (text.equals(originalText)) return;
+        // 清空原有内容并重新设置
+        // 清空段落中的所有run
+        for (int i = paragraph.getRuns().size() - 1; i >= 0; i--) {
+            paragraph.removeRun(i);
+        }
+        // 添加新的内容
+        XWPFRun run = paragraph.createRun();
+        run.setText(text);
     }
 
     /**

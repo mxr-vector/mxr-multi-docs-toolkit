@@ -2,7 +2,6 @@ package com.vector.utils.word;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +30,15 @@ public class WordExportHandler {
 
     /**
      * 生成Word文档
-     * @param templatePath 模板文件路径
-     * @param templateName 模板名称
+     * @param enumWord 枚举模板
      * @return Word文档对象
      */
-    public XWPFDocument generateWordDocument(String templatePath, String templateName) throws IOException {
-        if (StringUtils.isBlank(templatePath) || StringUtils.isBlank(templateName))
+    public XWPFDocument generateWordDocument(EnumWordTemplate enumWord) throws IOException {
+        String templatePath = enumWord.getPath();
+        String templateName = enumWord.getName();
+        if (templatePath==null || templatePath.isBlank())
+            throw new RuntimeException("参数错误");
+        if(templateName==null || templateName.isBlank())
             throw new RuntimeException("参数错误");
         // 使用模板文件
         try (InputStream inputStream = this.getClass().getResourceAsStream(templatePath);) {
@@ -92,9 +94,8 @@ public class WordExportHandler {
         boolean flag = false;
         // 检查表格 是否包含 指定的动态表格标识
         String tableText = WordCommonUtil.getTableText(table);
-        if (StringUtils.isBlank(tableText)) {
-            return false;
-        }
+        if (tableText == null || tableText.isBlank()) return false;
+
         for (AbstractDynamicTemplate dynamicTemplate : dynamicTemplates) {
             if(flag) break;
             flag =  dynamicTemplate.execute(table,tableText);
