@@ -29,7 +29,7 @@ public class TestController {
 
     @GetMapping("/aspose-pdf")
     public String asposePdf(){
-        String path = "/static/入职申请表.pdf";
+        String path = "/static/pdf/入职申请表.pdf";
 //        path = "/static/横向表头.pdf";
         pdfTableParsingEngine.tableAnalyze(path);
         return "hello";
@@ -47,5 +47,7 @@ public class TestController {
             document.close();
         }
     }
+
+
 
 }

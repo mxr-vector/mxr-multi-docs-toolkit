@@ -12,7 +12,7 @@ import lombok.Getter;
 public enum EnumWordTemplate {
 
     // demo 模板
-    GG("gg","/static/word_demo_template.docx"),
+    GG("gg","/static/word/word_demo_template.docx"),
     ;
 
     private final String name;
