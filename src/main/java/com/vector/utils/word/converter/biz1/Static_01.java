@@ -2,7 +2,7 @@ package com.vector.utils.word.converter.biz1;
 
 import com.vector.utils.context.TtlContextHolderUtil;
 import com.vector.utils.word.AbstractStaticTemplate;
-import com.vector.utils.word.EnumWordTemplate;
+import com.vector.enums.EnumWordTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.vector.utils.word;
+package com.vector.enums;
 
 import lombok.Getter;
 

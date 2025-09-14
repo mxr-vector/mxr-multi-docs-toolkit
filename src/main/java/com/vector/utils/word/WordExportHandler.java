@@ -1,5 +1,6 @@
 package com.vector.utils.word;
 
+import com.vector.enums.EnumWordTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.*;
@@ -55,7 +56,8 @@ public class WordExportHandler {
     /**
      * 处理表格数据
      *
-     * @param document
+     * @param document 文档对象
+     * @param templateName 模板名称
      */
     private void handleTable(XWPFDocument document, String templateName) {
         try {
@@ -105,8 +107,7 @@ public class WordExportHandler {
 
     /**
      * 处理静态段落  静态占位符为 一个staticTemplate对应一个静态模板
-     * @param  paragraph
-     * @return
+     * @param  paragraph 段落对象
      * @author YuanJie
      * @date 2025/8/11 15:06
      */
