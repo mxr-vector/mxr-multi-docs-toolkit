@@ -26,5 +26,5 @@ public interface MxrWordService {
      * @param path word文件路径
      * @param bookmarks 书签列表
      */
-    XWPFDocument replaceBookmarks(String path,List<Bookmark> bookmarks);
+    String replaceBookmarks(String path,List<Bookmark> bookmarks);
 }

@@ -14,7 +14,9 @@ import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Classname BookmarkHandler
@@ -28,9 +30,9 @@ import java.util.List;
 public class BookmarkHandler {
 
 
-    public XWPFDocument replaceBookmarks(String path, List<Bookmark> bookmarks) {
-        try {
-            XWPFDocument document = loadBackupDocument(path);
+    public String replaceBookmarks(String path, List<Bookmark> bookmarks) {
+        try (XWPFDocument document = loadBackupDocument(path);
+             FileOutputStream fos = new FileOutputStream(path)){
             // 1. 处理文档中的段落
             for (XWPFParagraph paragraph : document.getParagraphs()) {
                 replaceInParagraph(paragraph, bookmarks);
@@ -40,7 +42,10 @@ public class BookmarkHandler {
             for (XWPFTable table : document.getTables()) {
                 replaceInTable(table, bookmarks);
             }
-            return document;
+
+            // 写回文件（可覆盖原文件或另存）
+            document.write(fos);
+            return path;
         } catch (Exception e) {
             log.info("Error replacing bookmarks: {}", e.getMessage());
         }
@@ -87,35 +92,57 @@ public class BookmarkHandler {
     }
 
     /**
-     * 在段落中查找书签并替换内容
+     * 在段落中替换书签内容（优化版）
+     *
+     * @param paragraph 包含书签的段落对象
+     * @param bookmarks 书签列表，包含书签名称和对应的内容
      */
     private void replaceInParagraph(XWPFParagraph paragraph, List<Bookmark> bookmarks) {
+        if (bookmarks == null || bookmarks.isEmpty()) {
+            return;
+        }
+        // 获取 paragraph 的 DOM 节点
         CTP ctp = paragraph.getCTP();
         NodeList childNodes = ctp.getDomNode().getChildNodes();
+        if(childNodes.getLength() == 0) return;
 
+        // 1. 将书签列表转为 Map，加快匹配速度
+        Map<String, Bookmark> bookmarkMap = new HashMap<>(bookmarks.size());
+        for (Bookmark b : bookmarks) {
+            bookmarkMap.put(b.getName(), b);
+        }
+
+        // 2. 将 bookmarkEndList 建立 id -> end 映射，避免每次都全量遍历
+        Map<Integer, CTMarkupRange> endMap = new HashMap<>();
+        for (CTMarkupRange end : ctp.getBookmarkEndList()) {
+            endMap.put(end.getId().intValue(), end);
+        }
+
+        // 3. 遍历所有书签开始标记
         for (CTBookmark ctBookmark : ctp.getBookmarkStartList()) {
             String bookmarkName = ctBookmark.getName();
-
-            for (Bookmark b : bookmarks) {
-                if (bookmarkName.equals(b.getName())) {
-                    int bookmarkStartId = ctBookmark.getId().intValue();
-
-                    // 找到对应的 bookmarkEnd
-                    for (CTMarkupRange end : ctp.getBookmarkEndList()) {
-                        if (end.getId().intValue() == bookmarkStartId) {
-                            // 删除书签之间的 runs
-                            removeRunsBetween(paragraph, childNodes, ctBookmark, end);
-
-                            // 在书签结束位置插入新的 run
-                            XWPFRun run = paragraph.insertNewRun(findInsertPos(paragraph, childNodes, end));
-                            run.setText(b.getContext());
-                            break;
-                        }
-                    }
-                }
+            Bookmark b = bookmarkMap.get(bookmarkName);
+            if (b == null) {
+                continue; // 不在目标替换列表中
             }
+
+            int bookmarkStartId = ctBookmark.getId().intValue();
+            CTMarkupRange end = endMap.get(bookmarkStartId);
+            if (end == null) {
+                continue; // 找不到结束标记
+            }
+
+            // 删除书签之间的 runs
+            removeRunsBetween(paragraph, childNodes, ctBookmark, end);
+
+            // 在书签结束位置插入新的 run
+            int insertPos = findInsertPos(paragraph, childNodes, end);
+            XWPFRun run = paragraph.insertNewRun(insertPos);
+            run.setText(b.getContext());
         }
     }
+
+
 
     /**
      * 删除书签范围内的 runs

@@ -88,17 +88,7 @@ public class TestController {
 
         List<Bookmark> bookmarks = new ArrayList<>(List.of(bookmark1, bookmark2, bookmark3));
         String path = "/home/yuanjie/文档/ideaProject/mxr-multi-docs-toolkit/bookmark_test.docx";
-        XWPFDocument document = wordService.replaceBookmarks(path, bookmarks);
-        if (document == null) {
-            return "error";
-        }
-        // 写回文件（可覆盖原文件或另存）
-        try (document; FileOutputStream fos = new FileOutputStream(path)) {
-            document.write(fos);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return "success";
+        return wordService.replaceBookmarks(path, bookmarks);
 
     }
 

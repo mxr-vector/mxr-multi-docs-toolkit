@@ -26,7 +26,7 @@ public class MxrWordServiceImpl implements MxrWordService {
     }
 
     @Override
-    public XWPFDocument replaceBookmarks(String path, List<Bookmark> bookmarks) {
+    public String  replaceBookmarks(String path, List<Bookmark> bookmarks) {
         return bookmarkHandler.replaceBookmarks(path,bookmarks);
     }
 }
