@@ -30,6 +30,12 @@ import java.util.Map;
 public class BookmarkHandler {
 
 
+    /**
+     * 替换文档中的书签
+     * @param path
+     * @param bookmarks
+     * @return
+     */
     public String replaceBookmarks(String path, List<Bookmark> bookmarks) {
         try (XWPFDocument document = loadBackupDocument(path);
              FileOutputStream fos = new FileOutputStream(path)){
