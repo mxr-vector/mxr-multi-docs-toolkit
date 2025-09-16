@@ -31,11 +31,11 @@ public enum EnumBookmarkType {
      * @param name
      * @return
      */
-    public static String getByName(String name) {
+    public static EnumBookmarkType getByName(String name) {
         for (EnumBookmarkType value : values()) {
             String str = value.name().toLowerCase();
             if (str.equals(name.toLowerCase())) {
-                return str;
+                return value;
             }
         }
         return null;

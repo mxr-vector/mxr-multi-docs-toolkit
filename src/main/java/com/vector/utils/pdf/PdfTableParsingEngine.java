@@ -2,11 +2,11 @@ package com.vector.utils.pdf;
 
 import com.aspose.pdf.*;
 import com.vector.config.WordAuthLincense;
+import com.vector.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ResourceUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class PdfTableParsingEngine {
         // 初始化文档处理授权许可
         WordAuthLincense.setAuthLicense();
         // 使用try-with-resources自动管理文件资源
-        try (InputStream inputStream = this.getClass().getResourceAsStream(path);
+        try (InputStream inputStream = FileUtils.openFileStream(path);
              Document pdfDocument = new Document(inputStream)) {
 
             // 遍历文档所有页面进行表格处理

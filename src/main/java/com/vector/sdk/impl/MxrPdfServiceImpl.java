@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 public class MxrPdfServiceImpl implements MxrPdfService {
 
     private final PdfTableParsingEngine pdfTableParsingEngine;
+
     /*
      * pdf转结构化对象
      */
     @Override
-    public void pdfToObject(String  path) {
+    public void pdfToObject(String path) {
         pdfTableParsingEngine.tableAnalyze(path);
     }
 }

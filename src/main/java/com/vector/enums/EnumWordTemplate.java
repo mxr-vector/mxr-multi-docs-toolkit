@@ -2,6 +2,8 @@ package com.vector.enums;
 
 import lombok.Getter;
 
+import java.io.File;
+
 /**
  * @ClassName EnumWordTemplate
  * @description: word模板导出枚举类
@@ -12,7 +14,7 @@ import lombok.Getter;
 public enum EnumWordTemplate {
 
     // demo 模板
-    GG("gg","/static/word/word_demo_template.docx"),
+    GG("gg", System.getProperty("user.dir") + File.separator + "assets" + File.separator + "word" + File.separator + "word_demo_template.docx"),
     ;
 
     private final String name;

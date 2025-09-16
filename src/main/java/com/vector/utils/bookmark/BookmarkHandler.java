@@ -1,8 +1,12 @@
 package com.vector.utils.bookmark;
 
 import com.vector.entity.Bookmark;
+import com.vector.enums.EnumBookmarkType;
+import com.vector.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBookmark;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTMarkupRange;
@@ -11,9 +15,9 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +36,14 @@ public class BookmarkHandler {
 
     /**
      * 替换文档中的书签
+     *
      * @param path
      * @param bookmarks
      * @return
      */
     public String replaceBookmarks(String path, List<Bookmark> bookmarks) {
-        try (XWPFDocument document = loadBackupDocument(path);
-             FileOutputStream fos = new FileOutputStream(path)){
+        try (XWPFDocument document = loadLocalBackupDoc(path);
+             FileOutputStream fos = new FileOutputStream(path)) {
             // 1. 处理文档中的段落
             for (XWPFParagraph paragraph : document.getParagraphs()) {
                 replaceInParagraph(paragraph, bookmarks);
@@ -61,7 +66,7 @@ public class BookmarkHandler {
     /**
      * 从原文件生成备份，并返回备份文件的 XWPFDocument
      */
-    private static XWPFDocument loadBackupDocument(String path) throws Exception {
+    private static XWPFDocument loadLocalBackupDoc(String path) throws Exception {
         File originalFile = new File(path);
         if (!originalFile.exists()) {
             throw new IllegalArgumentException("文件不存在: " + path);
@@ -110,7 +115,7 @@ public class BookmarkHandler {
         // 获取 paragraph 的 DOM 节点
         CTP ctp = paragraph.getCTP();
         NodeList childNodes = ctp.getDomNode().getChildNodes();
-        if(childNodes.getLength() == 0) return;
+        if (childNodes.getLength() == 0) return;
 
         // 1. 将书签列表转为 Map，加快匹配速度
         Map<String, Bookmark> bookmarkMap = new HashMap<>(bookmarks.size());
@@ -131,6 +136,9 @@ public class BookmarkHandler {
             if (b == null) {
                 continue; // 不在目标替换列表中
             }
+            // 书签类型错误,下一个书签
+            EnumBookmarkType bookmarkType = EnumBookmarkType.getByName(b.getType());
+            if (bookmarkType == null) continue;
 
             int bookmarkStartId = ctBookmark.getId().intValue();
             CTMarkupRange end = endMap.get(bookmarkStartId);
@@ -144,10 +152,37 @@ public class BookmarkHandler {
             // 在书签结束位置插入新的 run
             int insertPos = findInsertPos(paragraph, childNodes, end);
             XWPFRun run = paragraph.insertNewRun(insertPos);
-            run.setText(b.getContext());
+
+            final String context = b.getContext();
+            switch (bookmarkType) {
+                case TEXT -> {
+                    run.setText(context);
+                }
+                case IMAGE -> {
+                    try (InputStream imageStream = FileUtils.openFileStream(context)) {
+                        BufferedImage image = ImageIO.read(imageStream);
+                        int originalWidth = image.getWidth(); // 原始宽度（像素）
+                        int originalHeight = image.getHeight(); // 原始高度（像素）
+                        // 将图片的原始尺寸转换为 EMU
+                        int emuWidth = Units.toEMU(originalWidth);
+                        int emuHeight = Units.toEMU(originalHeight);
+
+                        int picType = FileUtils.getPictureTypeForWPS(context);
+                        // 读取图片文件（如图像路径，图片文件必须存在）
+                        imageStream.reset();
+                        run.addPicture(imageStream, picType, context, emuWidth, emuHeight); // 设置图片宽高
+                    } catch (IOException | InvalidFormatException e) {
+                        log.error("替换标签: {} 失败, case: {}", b.getName(), e.getMessage());
+                        continue; // 如果图片读取失败，跳过当前书签替换
+                    }
+                }
+                case TABLE -> {
+                    // TODO
+                }
+            }
+
         }
     }
-
 
 
     /**

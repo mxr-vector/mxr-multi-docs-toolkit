@@ -1,6 +1,7 @@
 package com.vector.utils.word;
 
 import com.vector.enums.EnumWordTemplate;
+import com.vector.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.*;
@@ -11,9 +12,9 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * @author YuanJie
  * @ClassName DynamicTableHandler
  * @description: 动态表格处理器
- * @author YuanJie
  * @date 2025/8/11 09:38
  */
 @Component
@@ -31,18 +32,19 @@ public class WordExportHandler {
 
     /**
      * 生成Word文档
+     *
      * @param enumWord 枚举模板
      * @return Word文档对象
      */
     public XWPFDocument generateWordDocument(EnumWordTemplate enumWord) throws IOException {
         String templatePath = enumWord.getPath();
         String templateName = enumWord.getName();
-        if (templatePath==null || templatePath.isBlank())
+        if (templatePath == null || templatePath.isBlank())
             throw new RuntimeException("参数错误");
-        if(templateName==null || templateName.isBlank())
+        if (templateName == null || templateName.isBlank())
             throw new RuntimeException("参数错误");
         // 使用模板文件
-        try (InputStream inputStream = this.getClass().getResourceAsStream(templatePath);) {
+        try (InputStream inputStream = FileUtils.openFileStream(templatePath);) {
             if (inputStream == null) {
                 throw new IOException("模板文件未找到");
             }
@@ -56,7 +58,7 @@ public class WordExportHandler {
     /**
      * 处理表格数据
      *
-     * @param document 文档对象
+     * @param document     文档对象
      * @param templateName 模板名称
      */
     private void handleTable(XWPFDocument document, String templateName) {
@@ -99,15 +101,16 @@ public class WordExportHandler {
         if (tableText == null || tableText.isBlank()) return false;
 
         for (AbstractDynamicTemplate dynamicTemplate : dynamicTemplates) {
-            if(flag) break;
-            flag =  dynamicTemplate.execute(table,tableText);
+            if (flag) break;
+            flag = dynamicTemplate.execute(table, tableText);
         }
         return flag;
     }
 
     /**
      * 处理静态段落  静态占位符为 一个staticTemplate对应一个静态模板
-     * @param  paragraph 段落对象
+     *
+     * @param paragraph 段落对象
      * @author YuanJie
      * @date 2025/8/11 15:06
      */
