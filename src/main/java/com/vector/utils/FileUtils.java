@@ -4,6 +4,8 @@ import org.apache.poi.xwpf.usermodel.Document;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileUtils {
 
@@ -16,7 +18,7 @@ public class FileUtils {
         String lower = path.toLowerCase().trim();
         // 禁止 http://
         if (lower.startsWith("http://")) {
-            throw new RuntimeException("不支持 http://，请使用 https:// 或 file://");
+            throw new RuntimeException("不支持 http://，请使用 https:// 或 file:// "+ lower);
         }
 
         InputStream rawStream;
@@ -31,13 +33,13 @@ public class FileUtils {
             try {
                 URI uri = URI.create(path);
                 File file = new File(uri);
-                rawStream =  new FileInputStream(file);
+                rawStream =  Files.newInputStream(file.toPath());
             } catch (IllegalArgumentException e) {
                 throw new IOException("非法的 file:// 路径: " + path, e);
             }
         }else {
             // 默认：按普通文件路径解析（支持绝对路径、相对路径）
-            rawStream =  new FileInputStream(path);
+            rawStream =  Files.newInputStream(Paths.get(path));
         }
         // 使用包装流，可以方便回溯流等
         rawStream = new BufferedInputStream(rawStream);

@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,7 @@ public class BookmarkHandler {
         }
 
         // 打开备份文件返回
-        return new XWPFDocument(new FileInputStream(bakFile));
+        return new XWPFDocument(Files.newInputStream(bakFile.toPath()));
     }
 
     /**
