@@ -1,10 +1,10 @@
 package com.vector.controller;
 
-import com.vector.entity.Bookmark;
+import com.vector.docs.word.entity.Bookmark;
 import com.vector.sdk.MxrPdfService;
 import com.vector.sdk.MxrWordService;
 import com.vector.utils.context.TtlContextHolderUtil;
-import com.vector.enums.EnumWordTemplate;
+import com.vector.docs.word.enums.EnumWordTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;

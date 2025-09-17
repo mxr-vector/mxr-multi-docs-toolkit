@@ -1,10 +1,10 @@
 package com.vector.sdk.impl;
 
-import com.vector.entity.Bookmark;
-import com.vector.enums.EnumWordTemplate;
+import com.vector.docs.word.entity.Bookmark;
+import com.vector.docs.word.enums.EnumWordTemplate;
 import com.vector.sdk.MxrWordService;
-import com.vector.utils.bookmark.BookmarkHandler;
-import com.vector.utils.word.WordExportHandler;
+import com.vector.docs.word.bookmark.BookmarkHandler;
+import com.vector.docs.word.mapping.WordExportHandler;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.vector.sdk;
 
 
-import com.vector.entity.Bookmark;
-import com.vector.enums.EnumWordTemplate;
+import com.vector.docs.word.entity.Bookmark;
+import com.vector.docs.word.enums.EnumWordTemplate;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package com.vector.sdk.impl;
 
 import com.vector.sdk.MxrPdfService;
-import com.vector.utils.pdf.PdfTableParsingEngine;
+import com.vector.docs.pdf.mapping.PdfTableParsingEngine;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

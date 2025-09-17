@@ -22,6 +22,7 @@
         <javassist.version>3.30.2-GA</javassist.version>
         <pdfbox.version>3.0.4</pdfbox.version>
         <poi.version>5.4.1</poi.version>
+        <fastexcel.version>1.1.0</fastexcel.version>
         <ttl.version>2.14.5</ttl.version>
     </properties>
 
@@ -79,7 +80,7 @@
             <systemPath>${project.basedir}/lib/aspose-slides-21.10-jdk16-crack.jar</systemPath>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+        <!-- 生成pdf-test -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
@@ -96,6 +97,13 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${poi.version}</version>
+        </dependency>
+
+        <!--生成fastExcel-->
+        <dependency>
+            <groupId>cn.idev.excel</groupId>
+            <artifactId>fastexcel</artifactId>
+            <version>${fastexcel.version}</version>
         </dependency>
 
         <!-- Alibaba ttl本地线程 -->
