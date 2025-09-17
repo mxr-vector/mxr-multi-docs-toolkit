@@ -45,7 +45,7 @@ Multi-Docs-Toolkit 是一个功能强大的文档处理工具包，支持 Excel�
 - **Aspose PDF**：21.11 (PDF 处理)
 - **Aspose Words**：24.3 (Word 处理)
 - **FastExcel**：1.1.0 (Excel 处理)
-- **PDFBox**：3.0.4 (PDF 处理辅助)
+- **PDFBox**：3.0.4 (PDF 未使用,仅引入)
 
 ## 使用说明
 
