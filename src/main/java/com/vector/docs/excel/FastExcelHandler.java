@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +31,8 @@ import java.util.function.Function;
  * 该工具类结合了mybatisPlus框架实现,其中 {@link com.vector.docs.excel.Cursor}
  */
 @Slf4j
-public class FastExcelUtil {
+@Component
+public class FastExcelHandler {
 
     // 日期格式化器，用于格式化日期到yyyyMMdd
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -43,52 +46,52 @@ public class FastExcelUtil {
     /**
      * 使用FastExcel生成Excel  xls
      *
-     * @param response 响应对象，用于输出Excel文件
+     * @param response      响应对象，用于输出Excel文件
      * @param fileNameParam 文件名参数
-     * @param sheetName 工作表名称
-     * @param clazz 数据模型类
-     * @param t 泛型对象，用于获取游标
-     * @param func 函数式接口，用于获取数据游标 一般是数据库交互方法
+     * @param sheetName     工作表名称
+     * @param clazz         数据模型类
+     * @param t             泛型对象，用于获取游标
+     * @param func          函数式接口，用于获取数据游标 一般是数据库交互方法
      * @throws Exception 可能抛出的异常
      */
-    public static <T> void writeExcelXls(HttpServletResponse response, String fileNameParam,
-                                         String sheetName, Class<?> clazz, T t,
-                                         Function<T, Cursor<?>> func) throws Exception {
+    public <T> void writeExcelXls(HttpServletResponse response, String fileNameParam,
+                                  String sheetName, Class<?> clazz, T t,
+                                  Function<T, Cursor<?>> func) throws Exception {
         streamExportExcel(response, fileNameParam, sheetName, clazz, ExcelTypeEnum.XLS.getValue(), t, func);
     }
 
     /**
      * 使用FastExcel生成Excel  xlsx
      *
-     * @param response 响应对象，用于输出Excel文件
+     * @param response      响应对象，用于输出Excel文件
      * @param fileNameParam 文件名参数
-     * @param sheetName 工作表名称
-     * @param clazz 数据模型类
-     * @param t 泛型对象，用于获取游标
-     * @param func 函数式接口，用于获取数据游标 一般是数据库交互方法
+     * @param sheetName     工作表名称
+     * @param clazz         数据模型类
+     * @param t             泛型对象，用于获取游标
+     * @param func          函数式接口，用于获取数据游标 一般是数据库交互方法
      * @throws Exception 可能抛出的异常
      */
-    public static <T> void writeExcelXlsx(HttpServletResponse response, String fileNameParam,
-                                          String sheetName, Class<?> clazz, T t,
-                                          Function<T, Cursor<?>> func) throws Exception {
+    public <T> void writeExcelXlsx(HttpServletResponse response, String fileNameParam,
+                                   String sheetName, Class<?> clazz, T t,
+                                   Function<T, Cursor<?>> func) throws Exception {
         streamExportExcel(response, fileNameParam, sheetName, clazz, ExcelTypeEnum.XLSX.getValue(), t, func);
     }
 
     /**
      * 流式导出 Excel
      *
-     * @param response 响应对象，用于输出Excel文件
+     * @param response      响应对象，用于输出Excel文件
      * @param fileNameParam 文件名参数
-     * @param sheetName 工作表名称
-     * @param clazz 数据模型类
-     * @param excelType Excel文件类型
-     * @param t 泛型对象，用于获取游标
-     * @param func 函数式接口，用于获取数据游标
+     * @param sheetName     工作表名称
+     * @param clazz         数据模型类
+     * @param excelType     Excel文件类型
+     * @param t             泛型对象，用于获取游标
+     * @param func          函数式接口，用于获取数据游标
      * @throws Exception 可能抛出的异常
      */
-    private static <T> void streamExportExcel(HttpServletResponse response, String fileNameParam,
-                                              String sheetName, Class<?> clazz, String excelType,
-                                              T t, Function<T, Cursor<?>> func) throws Exception {
+    private <T> void streamExportExcel(HttpServletResponse response, String fileNameParam,
+                                       String sheetName, Class<?> clazz, String excelType,
+                                       T t, Function<T, Cursor<?>> func) throws Exception {
         String fileName = fileNameParam + DATE_TIME_FORMATTER.format(LocalDateTime.now()) + excelType;
         try (OutputStream outputStream = getOutputStream(fileName, response, excelType);
              ExcelWriter excelWriter = FastExcel.write(outputStream, clazz)
@@ -144,12 +147,12 @@ public class FastExcelUtil {
     /**
      * 创建WriteSheet对象
      *
-     * @param page 页码
+     * @param page      页码
      * @param sheetName 工作表名称
-     * @param strategy 样式策略
+     * @param strategy  样式策略
      * @return WriteSheet对象
      */
-    private static WriteSheet createWriteSheet(int page, String sheetName, HorizontalCellStyleStrategy strategy) {
+    private WriteSheet createWriteSheet(int page, String sheetName, HorizontalCellStyleStrategy strategy) {
         return FastExcel.writerSheet(page, sheetName + page)
                 .registerWriteHandler(strategy)
                 .build();
@@ -159,17 +162,17 @@ public class FastExcelUtil {
      * 导出文件时为Writer生成OutputStream
      *
      * @param finalName 最终文件名
-     * @param response 响应对象
+     * @param response  响应对象
      * @param excelType Excel文件类型
      * @return OutputStream对象
      * @throws Exception 可能抛出的异常
      */
-    private static OutputStream getOutputStream(String finalName, HttpServletResponse response, String excelType) throws Exception {
+    private OutputStream getOutputStream(String finalName, HttpServletResponse response, String excelType) throws Exception {
         response.reset();
         finalName = URLEncoder.encode(finalName, StandardCharsets.UTF_8);
-         if (ExcelTypeEnum.XLSX.getValue().equals(excelType)) {
+        if (ExcelTypeEnum.XLSX.getValue().equals(excelType)) {
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        }else if (ExcelTypeEnum.XLS.getValue().equals(excelType)) {
+        } else if (ExcelTypeEnum.XLS.getValue().equals(excelType)) {
             response.setContentType("application/vnd.ms-excel");
         }
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
@@ -182,54 +185,31 @@ public class FastExcelUtil {
 
 
     /**
-     * 导出List类型数据到Excel
-     *
-     * @param response 响应对象
-     * @param fileName 文件名
-     * @param list 数据列表
-     */
-    public static void exportList(HttpServletResponse response, String fileName, List<List<String>> list, ExcelTypeEnum excelType) {
-        excelType = excelType == null ? ExcelTypeEnum.XLSX : excelType;
-        exportData(response, fileName, list, excelType);
-    }
-
-    /**
-     * 导出Object List类型数据到Excel
-     *
-     * @param response 响应对象
-     * @param fileName 文件名
-     * @param list 数据列表
-     */
-    public static void exportObjectList(HttpServletResponse response, String fileName, List<List<Object>> list, ExcelTypeEnum excelType) {
-        excelType = excelType == null ? ExcelTypeEnum.XLSX : excelType;
-        exportData(response, fileName, list, excelType);
-    }
-
-    /**
      * 导出包含表头和数据的Excel
      *
      * @param response 响应对象
      * @param fileName 文件名
-     * @param listhead 表头列表
-     * @param list 数据列表
+     * @param clazz    表头列表
+     * @param list     数据列表
      */
-    public static void exportHeadAndData(HttpServletResponse response, String fileName, List<List<String>> listhead, List<List<String>> list, ExcelTypeEnum excelType) {
+    public void exportHeadAndData(HttpServletResponse response, String fileName, Class<?> clazz, List<List<String>> list, ExcelTypeEnum excelType) {
         try {
             excelType = excelType == null ? ExcelTypeEnum.XLSX : excelType;
             FastExcel.write(getOutputStream(fileName, response, excelType.getValue()))
                     .excelType(excelType)
                     .registerWriteHandler(new SimpleColumnWidthStyleStrategy(25))
                     .sheet(fileName)
-                    .head(listhead)
+                    .head(clazz)
                     .doWrite(list);
         } catch (Exception e) {
 //            throw new BadCommonException("导出异常", e);
-            throw new RuntimeException("导出模板异常", e);
+            throw new RuntimeException("Excel export error", e);
         }
     }
 
     /**
      * 导出模板
+     *
      * @param response
      * @param fileName
      * @param clazz
@@ -237,7 +217,7 @@ public class FastExcelUtil {
      * @author YuanJie
      * @date 2025/4/21 11:56
      */
-    public static void exportTemplate(HttpServletResponse response, String fileName,Class<?> clazz) {
+    public void exportTemplate(HttpServletResponse response, String fileName, Class<?> clazz) {
         try {
             FastExcel.write(getOutputStream(fileName, response, ExcelTypeEnum.XLSX.getValue()))
                     .excelType(ExcelTypeEnum.XLSX)
@@ -246,30 +226,32 @@ public class FastExcelUtil {
                     .head(clazz)
                     .doWrite(Collections.emptyList());
         } catch (Exception e) {
-            throw new RuntimeException("导出模板异常", e);
+            throw new RuntimeException("Excel export error", e);
         }
     }
 
     /**
      * 公共导出方法
      *
-     * @param response 响应对象
-     * @param fileName 文件名
-     * @param list 数据列表
-     * @param type Excel文件类型枚举
-     * @param <T> 泛型类型
+     * @param response  响应对象
+     * @param fileName  文件名
+     * @param list      数据列表 表格是二维的 外面行 里面列
+     * @param excelType Excel文件类型枚举
+     * @param <E>       泛型类型
      */
-    private static <T> void exportData(HttpServletResponse response, String fileName, List<T> list, ExcelTypeEnum type) {
+    public <E> void exportList(HttpServletResponse response, String fileName, List<E> list, ExcelTypeEnum excelType) {
         try {
+            excelType = excelType == null ? ExcelTypeEnum.XLSX : excelType;
+            fileName = fileName == null || fileName.isEmpty() ? "demo.xlsx" : fileName;
             log.debug("导出的数据行数为：{}", list.size());
-            FastExcel.write(getOutputStream(fileName, response, type.getValue()))
-                    .excelType(type)
+            FastExcel.write(getOutputStream(fileName, response, excelType.getValue()))
+                    .excelType(excelType)
                     .registerWriteHandler(new SimpleColumnWidthStyleStrategy(25))
                     .sheet(fileName)
                     .doWrite(list);
         } catch (Exception e) {
 //            throw new BadCommonException("导出异常", e);
-            throw new RuntimeException("导出模板异常", e);
+            throw new RuntimeException("Excel export error", e);
         }
     }
 }

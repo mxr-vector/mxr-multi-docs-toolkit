@@ -18,7 +18,7 @@ import java.io.*;
  */
 @Deprecated
 public class PDFboxTable {
-    private static final String path = "/static/入职申请表.pdf";
+    private static final String path = "/static/struct_mapping_test1.pdf";
 
     public static void main(String[] args) throws IOException {
         //加载PDF文件

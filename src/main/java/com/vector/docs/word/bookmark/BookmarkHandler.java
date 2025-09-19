@@ -56,6 +56,7 @@ public class BookmarkHandler {
             }
 
             // 写回文件（可覆盖原文件或另存）
+            document.enforceUpdateFields();
             document.write(fos);
             return path;
         } catch (Exception e) {

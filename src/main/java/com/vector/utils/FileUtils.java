@@ -18,7 +18,7 @@ public class FileUtils {
         String lower = path.toLowerCase().trim();
         // 禁止 http://
         if (lower.startsWith("http://")) {
-            throw new RuntimeException("不支持 http://，请使用 https:// 或 file:// "+ lower);
+            throw new RuntimeException("不支持 http://, 请使用 https:// 或 file:// "+ lower);
         }
 
         InputStream rawStream;

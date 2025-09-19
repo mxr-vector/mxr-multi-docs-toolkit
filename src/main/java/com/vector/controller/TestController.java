@@ -1,10 +1,16 @@
 package com.vector.controller;
 
+import com.aspose.words.Document;
+import com.vector.config.WordAuthLicense;
+import com.vector.docs.excel.entity.UserInfo;
 import com.vector.docs.word.entity.Bookmark;
+import com.vector.sdk.MxrExcelService;
 import com.vector.sdk.MxrPdfService;
 import com.vector.sdk.MxrWordService;
+import com.vector.utils.FileUtils;
 import com.vector.utils.context.TtlContextHolderUtil;
 import com.vector.docs.word.enums.EnumWordTemplate;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -14,7 +20,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author YuanJie
@@ -33,10 +41,14 @@ public class TestController {
 
     private final MxrWordService wordService;
 
+    private final MxrExcelService  excelService;
+
+    private final HttpServletResponse response;
+
 
     @GetMapping("/aspose-pdf")
     public String asposePdf() {
-        String path = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "pdf" + File.separator + "入职申请表.pdf";
+        String path = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "pdf" + File.separator + "struct_mapping_test1.pdf";
 //        path = "/static/横向表头.pdf";
         pdfService.pdfToObject(path);
         return "hello";
@@ -87,8 +99,53 @@ public class TestController {
 
         List<Bookmark> bookmarks = new ArrayList<>(List.of(bookmark1, bookmark2, bookmark3));
         String path = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "word" + File.separator + "bookmark_test.docx";
-        return wordService.replaceBookmarks(path, bookmarks);
+        path =  wordService.replaceBookmarks(path, bookmarks);
+
+        try {
+            // 初始化文档处理授权许可
+            WordAuthLicense.setAuthLicense();
+            Document document = new Document(FileUtils.openFileStream(path));
+            document.updateFields();
+            document.save(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return path;
+    }
+
+    /**
+     * excel数据比对
+     * 比对excel数据和数据库对应数据的部分属性差异
+     */
+    @GetMapping("/compareTo-excel")
+    public void compareToExcel() throws IOException {
+        String path = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "excel" + File.separator + "compareTo_test.xlsx";
+
+        excelService.compareToData(path,UserInfo.class,UserInfo::getId,this::getUsers);
+    }
+
+    private <T> List<UserInfo> getUsers(List<T> ids){
+        UserInfo user1 = new UserInfo("D61626B9A85E7E9DE0530D5051AC2BD1","yuanjie","渊洁","123456","qwe","teacher");
+        UserInfo user2 = new UserInfo("EmVgYvGGX4yHIgaP5kJ","yuanjie2","渊洁2","123456","wer","teacher");
+        UserInfo user3 = new UserInfo("asdas","yuanjie3","渊洁3","123456","wer","teacher");
+
+        return Stream.of(user1, user2, user3)
+                .filter(u -> ids.contains(u.getId()))
+                .toList();
     }
 
 
+    @GetMapping("/stream-export-excel")
+//    @Transactional
+    public void export() throws Exception {
+        Long params = 110101001000L;
+
+//        excelService.writeExcelXlsx(
+//                response,
+//                "地市信息",
+//                "地市区域",
+//                AreaCodeDto.class,
+//                params,
+//                param -> testMapper.export(null));
+    }
 }

@@ -26,7 +26,7 @@ public class ReadDataListener<T> implements ReadListener<T> {
     /**
      * 缓存的数据
      */
-    private List<T> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    private final List<T> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
     private final Function<List<T>, Integer> func;
 
@@ -48,7 +48,7 @@ public class ReadDataListener<T> implements ReadListener<T> {
         if (cachedDataList.size() >= BATCH_COUNT) {
             saveData();
             // 存储完成清理 list
-            cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+            cachedDataList.clear();
         }
     }
 
@@ -68,6 +68,7 @@ public class ReadDataListener<T> implements ReadListener<T> {
      * 加上存储数据库
      */
     private void saveData() {
+        if(func == null) return;
         log.info("{}条数据，开始存储数据库！", cachedDataList.size());
         func.apply(cachedDataList);
         log.info("存储数据库成功！");
