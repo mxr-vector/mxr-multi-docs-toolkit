@@ -37,7 +37,7 @@ public class MxrExcelServiceImpl implements MxrExcelService {
                                         Class<?> clazz,
                                         Function<T, R> getterField,
                                         Function<List<E>, List<?>> dumpFunc) throws IOException {
-        FastExcel.read(FileUtils.openFileStream(path), clazz, new CompareListener(response, getterField, dumpFunc))
+        FastExcel.read(FileUtils.openFileStream(path), clazz, new CompareListener(response,clazz, getterField, dumpFunc))
                 .sheet()
                 .doRead();
     }

@@ -185,29 +185,6 @@ public class FastExcelHandler {
 
 
     /**
-     * 导出包含表头和数据的Excel
-     *
-     * @param response 响应对象
-     * @param fileName 文件名
-     * @param clazz    表头列表
-     * @param list     数据列表
-     */
-    public void exportHeadAndData(HttpServletResponse response, String fileName, Class<?> clazz, List<List<String>> list, ExcelTypeEnum excelType) {
-        try {
-            excelType = excelType == null ? ExcelTypeEnum.XLSX : excelType;
-            FastExcel.write(getOutputStream(fileName, response, excelType.getValue()))
-                    .excelType(excelType)
-                    .registerWriteHandler(new SimpleColumnWidthStyleStrategy(25))
-                    .sheet(fileName)
-                    .head(clazz)
-                    .doWrite(list);
-        } catch (Exception e) {
-//            throw new BadCommonException("导出异常", e);
-            throw new RuntimeException("Excel export error", e);
-        }
-    }
-
-    /**
      * 导出模板
      *
      * @param response
@@ -248,6 +225,31 @@ public class FastExcelHandler {
                     .excelType(excelType)
                     .registerWriteHandler(new SimpleColumnWidthStyleStrategy(25))
                     .sheet(fileName)
+                    .doWrite(list);
+        } catch (Exception e) {
+//            throw new BadCommonException("导出异常", e);
+            throw new RuntimeException("Excel export error", e);
+        }
+    }
+
+
+    /**
+     * 导出包含表头和数据的Excel
+     *
+     * @param response 响应对象
+     * @param fileName 文件名
+     * @param clazz    表头列表
+     * @param list     数据列表
+     */
+    public <E> void exportHeadAndData(HttpServletResponse response, String fileName, Class<?> clazz, List<E> list, ExcelTypeEnum excelType) {
+        try {
+            excelType = excelType == null ? ExcelTypeEnum.XLSX : excelType;
+            fileName = fileName == null || fileName.isEmpty() ? "demo.xlsx" : fileName;
+            FastExcel.write(getOutputStream(fileName, response, excelType.getValue()))
+                    .excelType(excelType)
+                    .registerWriteHandler(new SimpleColumnWidthStyleStrategy(25))
+                    .sheet(fileName)
+                    .head(clazz)
                     .doWrite(list);
         } catch (Exception e) {
 //            throw new BadCommonException("导出异常", e);

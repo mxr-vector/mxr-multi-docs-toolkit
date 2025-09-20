@@ -10,7 +10,6 @@ import com.vector.sdk.MxrWordService;
 import com.vector.utils.FileUtils;
 import com.vector.utils.context.TtlContextHolderUtil;
 import com.vector.docs.word.enums.EnumWordTemplate;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -42,8 +40,6 @@ public class TestController {
     private final MxrWordService wordService;
 
     private final MxrExcelService  excelService;
-
-    private final HttpServletResponse response;
 
 
     @GetMapping("/aspose-pdf")

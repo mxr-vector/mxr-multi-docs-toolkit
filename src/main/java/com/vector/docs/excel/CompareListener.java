@@ -40,15 +40,20 @@ public class CompareListener <T,R,E> implements ReadListener<T> {
      * 响应数据
      */
     private final HttpServletResponse response;
+    /**
+     * 要导出的实体头
+     */
+    private final Class<?> clazz;
 
     /**
      * @param getterField excel和数据库关联属性
      * @param dumpFunc 查询数据库方法
      */
-    public CompareListener(HttpServletResponse response,Function<T,R> getterField,Function<List<E>,List<?>> dumpFunc) {
+    public CompareListener(HttpServletResponse response,Class<?> clazz,Function<T,R> getterField,Function<List<E>,List<?>> dumpFunc) {
+        this.response = response;
+        this.clazz = clazz;
         this.getterField = getterField;
         this.dumpFunc = dumpFunc;
-        this.response = response;
     }
 
     @Override
@@ -74,6 +79,6 @@ public class CompareListener <T,R,E> implements ReadListener<T> {
      */
     private void compareTo(List<E> fieldVals, Function<List<E>,List<?>> dumpFunc) {
         List<?> apply = dumpFunc.apply(fieldVals);
-        new FastExcelHandler().exportList(response,"compareTo.xlsx",apply,null);
+        new FastExcelHandler().exportHeadAndData(response,"compareTo.xlsx",clazz,apply,null);
     }
 }
