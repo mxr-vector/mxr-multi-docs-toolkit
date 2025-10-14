@@ -1,5 +1,7 @@
 package com.vector.controller;
 
+import cn.idev.excel.FastExcel;
+import cn.idev.excel.support.ExcelTypeEnum;
 import com.aspose.words.Document;
 import com.vector.config.WordAuthLicense;
 import com.vector.docs.excel.entity.UserInfo;
@@ -20,6 +22,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -115,15 +121,21 @@ public class TestController {
      */
     @GetMapping("/compareTo-excel")
     public void compareToExcel() throws IOException {
-        String path = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "excel" + File.separator + "compareTo_test.xlsx";
+        String path = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "excel" + File.separator + "地下管线用户表_20250912.xlsx";
 
-        excelService.compareToData(path,UserInfo.class,UserInfo::getId,this::getUsers);
+        excelService.compareToData(path,UserInfo.class,UserInfo::getIdentity,this::getUsers);
     }
 
+    /**
+     * 模拟数据库数据
+     * @param ids
+     * @return
+     * @param <T>
+     */
     private <T> List<UserInfo> getUsers(List<T> ids){
-        UserInfo user1 = new UserInfo("D61626B9A85E7E9DE0530D5051AC2BD1","yuanjie","渊洁","123456","qwe","teacher");
-        UserInfo user2 = new UserInfo("EmVgYvGGX4yHIgaP5kJ","yuanjie2","渊洁2","123456","wer","teacher");
-        UserInfo user3 = new UserInfo("asdas","yuanjie3","渊洁3","123456","wer","teacher");
+        UserInfo user1 = new UserInfo("D61626B9A85E7E9DE0530D5051AC2BD1","渊洁","123456","qwe");
+        UserInfo user2 = new UserInfo("EmVgYvGGX4yHIgaP5kJ","渊洁2","123456","wer");
+        UserInfo user3 = new UserInfo("asdas","渊洁3","123456","wer");
 
         return Stream.of(user1, user2, user3)
                 .filter(u -> ids.contains(u.getId()))

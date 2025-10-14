@@ -56,6 +56,11 @@ public class CompareListener <T,R,E> implements ReadListener<T> {
         this.dumpFunc = dumpFunc;
     }
 
+    /**
+     * 从来源获取关键词，到数据库数据中比对，并获取比对正确的结果
+     * @param o
+     * @param analysisContext
+     */
     @Override
     public void invoke(Object o, AnalysisContext analysisContext) {
         cachedDataList.add((T) o);
