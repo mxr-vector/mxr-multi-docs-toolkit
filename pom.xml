@@ -24,6 +24,7 @@
         <poi.version>5.4.1</poi.version>
         <fastexcel.version>1.1.0</fastexcel.version>
         <ttl.version>2.14.5</ttl.version>
+        <ik-analyzer.version>9.0.0</ik-analyzer.version>
     </properties>
 
     <dependencyManagement>
@@ -37,6 +38,13 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/cn.shenyanchao.ik-analyzer/ik-analyzer -->
+        <dependency>
+            <groupId>cn.shenyanchao.ik-analyzer</groupId>
+            <artifactId>ik-analyzer</artifactId>
+            <version>${ik-analyzer.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

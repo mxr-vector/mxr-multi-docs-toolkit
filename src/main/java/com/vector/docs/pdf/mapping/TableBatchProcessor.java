@@ -2,6 +2,7 @@ package com.vector.docs.pdf.mapping;
 
 import com.aspose.pdf.*;
 import com.vector.utils.StringEscapeUtil;
+import com.vector.utils.vector.VectorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -64,11 +65,6 @@ public class TableBatchProcessor {
      * 最大缓存条目数
      */
     private static final int MAX_CACHE_ENTRIES = 1000;
-
-    /**
-     * 矢量特征维度
-     */
-    private static final int VECTOR_DIMENSION = 16;
 
     /**
      * 批处理线程池
@@ -424,117 +420,12 @@ public class TableBatchProcessor {
      */
     private double calculateSimilarity(String str1, String str2) {
         // 计算内容相似度
-        double contentSimilarity = calculateContentSimilarity(str1, str2);
+        double contentSimilarity = VectorUtils.calculateContentSimilarity(str1, str2);
         // 计算样式相似度
         double styleSimilarity = calculateStyleSimilarity(str1, str2);
         // 综合相似度
         return (contentSimilarity + styleSimilarity) / 2;
     }
-
-    /**
-     * 计算内容相似度（基于矢量相似度）
-     *
-     * @param str1 字符串1
-     * @param str2 字符串2
-     * @return 内容相似度
-     */
-    private double calculateContentSimilarity(String str1, String str2) {
-        if (str1 == null || str2 == null) {
-            throw new IllegalArgumentException("输入字符串不能为空");
-        }
-
-        // 将字符串转换为特征向量
-        double[] vector1 = stringToVector(str1);
-        double[] vector2 = stringToVector(str2);
-
-        // 计算余弦相似度
-        return cosineSimilarity(vector1, vector2);
-    }
-
-    /**
-     * 将字符串转换为特征向量
-     *
-     * @param str 输入字符串
-     * @return 特征向量
-     */
-    private double[] stringToVector(String str) {
-        // 初始化特征向量
-        double[] vector = new double[VECTOR_DIMENSION];
-
-        // 创建字符频率映射
-        Map<Character, Integer> charFrequency = new HashMap<>();
-
-        // 统计字符频率
-        for (char c : str.toCharArray()) {
-            charFrequency.put(c, charFrequency.getOrDefault(c, 0) + 1);
-        }
-
-        // 将字符频率映射到特征向量
-        for (char c : charFrequency.keySet()) {
-            int index = Math.abs(c) % VECTOR_DIMENSION;
-            vector[index] += charFrequency.get(c);
-        }
-
-        // 归一化向量
-        normalizeVector(vector);
-
-        return vector;
-    }
-
-    /**
-     * 归一化向量
-     *
-     * @param vector 输入向量
-     */
-    private void normalizeVector(double[] vector) {
-        double magnitude = 0.0;
-
-        // 计算向量模长
-        for (double value : vector) {
-            magnitude += value * value;
-        }
-        magnitude = Math.sqrt(magnitude);
-
-        // 归一化向量
-        if (magnitude > 0) {
-            for (int i = 0; i < vector.length; i++) {
-                vector[i] /= magnitude;
-            }
-        }
-    }
-
-    /**
-     * 计算余弦相似度
-     *
-     * @param vector1 向量1
-     * @param vector2 向量2
-     * @return 余弦相似度
-     */
-    private double cosineSimilarity(double[] vector1, double[] vector2) {
-        if (vector1.length != vector2.length) {
-            throw new IllegalArgumentException("向量维度不匹配");
-        }
-
-        double dotProduct = 0.0;
-        double magnitude1 = 0.0;
-        double magnitude2 = 0.0;
-
-        for (int i = 0; i < vector1.length; i++) {
-            dotProduct += vector1[i] * vector2[i];
-            magnitude1 += vector1[i] * vector1[i];
-            magnitude2 += vector2[i] * vector2[i];
-        }
-
-        magnitude1 = Math.sqrt(magnitude1);
-        magnitude2 = Math.sqrt(magnitude2);
-
-        if (magnitude1 == 0.0 || magnitude2 == 0.0) {
-            return 0.0;
-        } else {
-            return dotProduct / (magnitude1 * magnitude2);
-        }
-    }
-
     /**
      * 计算样式相似度
      *
