@@ -131,14 +131,27 @@ public class VectorUtils {
 
         // 将字符频率映射到特征向量
         for (char c : str.toCharArray()) {
-            int index1 = (Math.abs(c) * 131) & (FIXED_DIMENSION - 1);
-            int index2 = (Math.abs(c) * 13131) & (FIXED_DIMENSION - 1); // 第二次 hash增强特征
+
+            int h1 = mix32(c);
+            int index1 = h1 & (FIXED_DIMENSION - 1);
+            int h2 = mix32(h1 ^ 0x9e3779b9);
+            int index2 = h2 & (FIXED_DIMENSION - 1); // 第二次 hash增强特征
             vector[index1] += 1.0F;
             vector[index2] += 0.5F;            // 降低第二 hash 权重
         }
 
         // 归一化向量
         return normalizeVector(vector);
+    }
+
+    /** 32bit AVA 混合函数（极快，高质量） */
+    private static int mix32(int x) {
+        x ^= (x >>> 16); // 高低位第一次混合
+        x *= 0x7feb352d; // 扩散 bit 模式
+        x ^= (x >>> 15); // 修正低位偏差
+        x *= 0x846ca68b; // 再扩散，保证接近均匀
+        x ^= (x >>> 16); // 雪崩定型
+        return x;
     }
 
     /**
