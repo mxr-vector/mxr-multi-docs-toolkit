@@ -80,7 +80,7 @@ handler.replaceBookmarks("path/to/document.docx", bookmarks);
 ## 项目结构
 
 ```
-src/main/java/com/vector/
+src/main/java/com/mxr/
 ├── docs/                    # 文档处理核心组件
 │   ├── excel/              # Excel处理相关类
 │   ├── pdf/                # PDF处理相关类

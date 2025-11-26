@@ -1,0 +1,65 @@
+package com.mxr.docs.word.mapping.converter.biz1;
+
+import com.mxr.docs.word.mapping.AbstractDynamicTemplate;
+import com.mxr.utils.WordCommonUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+/**
+ * @ClassName Dynamic01
+ * @description: 动态实例demo
+ * @author YuanJie
+ * @date 2025/8/11 09:08
+ */
+@Slf4j
+@Component
+public class Dynamic_01 extends AbstractDynamicTemplate {
+
+
+    @Override
+    protected boolean execute(XWPFTable table,String tableText) {
+        try {
+            int cellNum = 3;
+            // 检查表格 是否包含 指定的动态表格标识
+            // 处理动态表格
+            if (!tableText.contains("${DYNAMIC_01}")) {
+                return false;
+            }
+            // 获取数据
+            List<String> list = List.of("test1", "test2", "test3");
+            // 清除现有行（保留表头）
+            while (table.getRows().size() > 1) {
+                table.removeRow(1);
+            }
+
+            // 添加数据行
+            for (String item : list) {
+                XWPFTableRow row = table.createRow();
+                List<XWPFTableCell> cells = row.getTableCells();
+
+                // 确保有足够的单元列
+                while (cells.size() < cellNum) {
+                    row.createCell();
+                    cells = row.getTableCells();
+                }
+
+                // 填充数据：土地用途、用地面积、土地用途占比
+                WordCommonUtil.setCellTextWithStyle(cells.get(0), item != null ? item : "");
+                WordCommonUtil.setCellTextWithStyle(cells.get(1), item != null ? item : "");
+                WordCommonUtil.setCellTextWithStyle(cells.get(2), item != null ? item + "%" : "");
+            }
+
+            log.info("成功处理动态表格，数据行数: {}", list.size());
+            return true;
+
+        } catch (Exception e) {
+            log.error("处理动态表格失败: {}", e.getMessage(), e);
+            return false;
+        }
+    }
+}
