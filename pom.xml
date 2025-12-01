@@ -130,6 +130,18 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    <compilerArgs>
+                        <arg>--add-modules=jdk.incubator.vector</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <compilerArguments>
+                        <add-modules>jdk.incubator.vector</add-modules>
+                    </compilerArguments>
                 </configuration>
             </plugin>
         </plugins>
